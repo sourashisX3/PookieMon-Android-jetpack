@@ -146,6 +146,7 @@ fun PokemonListScreen(
                                     onClick = {
                                         navController.navigate(Route.PokemonDetailRoute(pokemon.id))
                                     },
+                                    modifier = Modifier.animateItem(),
                                     sharedTransitionScope = sharedTransitionScope,
                                     animatedVisibilityScope = animatedVisibilityScope,
                                 )

@@ -1,8 +1,11 @@
 package com.funapp.pookiemon.feature.pokemon.presentation.screens.detail
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -35,7 +38,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -292,113 +299,35 @@ private fun PokemonDetailContent(
         ) {
             Spacer(modifier = Modifier.height(4.dp))
 
-            Card(
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+            AnimatedSection(index = 0) {
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                 ) {
-                    val heightM = pokemon.height / 10.0
-                    val weightKg = pokemon.weight / 10.0
-                    StatRow(label = stringResource(com.funapp.pookiemon.R.string.height), value = stringResource(com.funapp.pookiemon.R.string.meters_format, heightM))
-                    StatRow(label = stringResource(com.funapp.pookiemon.R.string.weight), value = stringResource(com.funapp.pookiemon.R.string.kg_format, weightKg))
-                    StatRow(
-                        label = stringResource(com.funapp.pookiemon.R.string.base_xp),
-                        value = pokemon.baseExperience?.toString() ?: "\u2014",
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                    ) {
+                        val heightM = pokemon.height / 10.0
+                        val weightKg = pokemon.weight / 10.0
+                        StatRow(label = stringResource(com.funapp.pookiemon.R.string.height), value = stringResource(com.funapp.pookiemon.R.string.meters_format, heightM))
+                        StatRow(label = stringResource(com.funapp.pookiemon.R.string.weight), value = stringResource(com.funapp.pookiemon.R.string.kg_format, weightKg))
+                        StatRow(
+                            label = stringResource(com.funapp.pookiemon.R.string.base_xp),
+                            value = pokemon.baseExperience?.toString() ?: "\u2014",
+                        )
+                    }
                 }
             }
 
             if (pokemon.abilities.isNotEmpty()) {
-                Card(
-                    shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                    ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = stringResource(com.funapp.pookiemon.R.string.abilities),
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                            ),
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        FlowRow(
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp),
-                        ) {
-                            pokemon.abilities.forEach { ability ->
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            if (ability.isHidden) typeColorValue.copy(alpha = 0.12f)
-                                            else MaterialTheme.colorScheme.surfaceVariant,
-                                            RoundedCornerShape(8.dp),
-                                        )
-                                        .padding(horizontal = 10.dp, vertical = 5.dp),
-                                ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                    ) {
-                                        if (ability.isHidden) {
-                                            Icon(
-                                                imageVector = Icons.Default.Star,
-                                                contentDescription = null,
-                                                modifier = Modifier.size(12.dp),
-                                                tint = typeColorValue,
-                                            )
-                                        }
-                                        Text(
-                                            text = ability.name
-                                                .replaceFirstChar { c -> c.uppercase() }
-                                                .replace("-", " "),
-                                            style = MaterialTheme.typography.bodySmall.copy(
-                                                fontWeight = FontWeight.SemiBold,
-                                            ),
-                                            color = if (ability.isHidden) typeColorValue
-                                            else MaterialTheme.colorScheme.onSurfaceVariant,
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (pokemon.stats.isNotEmpty()) {
-                Card(
-                    shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                    ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        StatSection(
-                            stats = pokemon.stats,
-                            accentColor = typeColorValue,
-                        )
-                    }
-                }
-            }
-
-            if (species != null) {
-                if (species.flavorText != null) {
+                AnimatedSection(index = 1) {
                     Card(
                         shape = RoundedCornerShape(16.dp),
                         modifier = Modifier.fillMaxWidth(),
@@ -409,22 +338,109 @@ private fun PokemonDetailContent(
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
-                                text = stringResource(com.funapp.pookiemon.R.string.description),
+                                text = stringResource(com.funapp.pookiemon.R.string.abilities),
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold,
                                 ),
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Text(
-                                text = species.flavorText,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            Spacer(modifier = Modifier.height(8.dp))
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp),
+                            ) {
+                                pokemon.abilities.forEach { ability ->
+                                    Box(
+                                        modifier = Modifier
+                                            .background(
+                                                if (ability.isHidden) typeColorValue.copy(alpha = 0.12f)
+                                                else MaterialTheme.colorScheme.surfaceVariant,
+                                                RoundedCornerShape(8.dp),
+                                            )
+                                            .padding(horizontal = 10.dp, vertical = 5.dp),
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                        ) {
+                                            if (ability.isHidden) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Star,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(12.dp),
+                                                    tint = typeColorValue,
+                                                )
+                                            }
+                                            Text(
+                                                text = ability.name
+                                                    .replaceFirstChar { c -> c.uppercase() }
+                                                    .replace("-", " "),
+                                                style = MaterialTheme.typography.bodySmall.copy(
+                                                    fontWeight = FontWeight.SemiBold,
+                                                ),
+                                                color = if (ability.isHidden) typeColorValue
+                                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (pokemon.stats.isNotEmpty()) {
+                AnimatedSection(index = 2) {
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            StatSection(
+                                stats = pokemon.stats,
+                                accentColor = typeColorValue,
                             )
                         }
                     }
                 }
+            }
 
+            if (species != null) {
+                if (species.flavorText != null) {
+                    AnimatedSection(index = 3) {
+                        Card(
+                            shape = RoundedCornerShape(16.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                            ),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Text(
+                                    text = stringResource(com.funapp.pookiemon.R.string.description),
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Bold,
+                                    ),
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = species.flavorText,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    }
+                }
+
+                AnimatedSection(index = 4) {
                 Card(
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier.fillMaxWidth(),
@@ -500,6 +516,7 @@ private fun PokemonDetailContent(
                         )
                     }
                 }
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -519,6 +536,28 @@ private fun colorFromName(name: String): Color = when (name.lowercase()) {
     "white" -> Color(0xFF9CA3AF)
     "yellow" -> Color(0xFFEAB308)
     else -> Color.Gray
+}
+
+@Composable
+private fun AnimatedSection(
+    index: Int,
+    content: @Composable () -> Unit,
+) {
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        visible = true
+    }
+    val baseDelay = 300
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(animationSpec = tween(delayMillis = baseDelay + index * 100, durationMillis = 400)) +
+            slideInVertically(
+                animationSpec = tween(delayMillis = baseDelay + index * 100, durationMillis = 400),
+                initialOffsetY = { it / 4 },
+            ),
+    ) {
+        content()
+    }
 }
 
 @Composable
