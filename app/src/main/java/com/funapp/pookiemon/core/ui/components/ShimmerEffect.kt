@@ -1,6 +1,5 @@
 package com.funapp.pookiemon.core.ui.components
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -19,20 +18,21 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+private const val SHIMMER_WIDTH = 300f
+
 @Composable
 fun shimmerBrush(
     targetValue: Float,
-    shimmerColor: Color = Color.White.copy(alpha = 0.3f),
-    baseColor: Color = Color.White.copy(alpha = 0.1f),
+    shimmerColor: Color,
+    baseColor: Color,
 ): Brush {
     return Brush.linearGradient(
-        colors = listOf(baseColor, baseColor, shimmerColor, baseColor, baseColor),
-        start = Offset.Zero,
-        end = Offset(x = targetValue, y = targetValue),
+        colors = listOf(baseColor, shimmerColor, baseColor),
+        start = Offset(targetValue, 0f),
+        end = Offset(targetValue + SHIMMER_WIDTH, 0f),
     )
 }
 
-@SuppressLint("SuspiciousModifierThen")
 fun Modifier.shimmerEffect(
     brush: Brush,
     shape: RoundedCornerShape = RoundedCornerShape(12.dp),
@@ -44,18 +44,18 @@ fun Modifier.shimmerEffect(
 fun rememberShimmerBrush(): Brush {
     val transition = rememberInfiniteTransition(label = "shimmer")
     val shimmerTranslate by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1000f,
+        initialValue = -SHIMMER_WIDTH,
+        targetValue = 1500f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1200, easing = FastOutSlowInEasing),
+            animation = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Restart,
         ),
         label = "shimmerTranslate",
     )
 
     val isDark = isSystemInDarkTheme()
-    val shimmerColor = if (isDark) Color.White.copy(alpha = 0.3f) else Color.Black.copy(alpha = 0.12f)
-    val baseColor = if (isDark) Color.White.copy(alpha = 0.1f) else Color.Black.copy(alpha = 0.04f)
+    val shimmerColor = if (isDark) Color.White.copy(alpha = 0.25f) else Color.White.copy(alpha = 0.5f)
+    val baseColor = if (isDark) Color.White.copy(alpha = 0.06f) else Color.Black.copy(alpha = 0.04f)
 
     return shimmerBrush(
         targetValue = shimmerTranslate,

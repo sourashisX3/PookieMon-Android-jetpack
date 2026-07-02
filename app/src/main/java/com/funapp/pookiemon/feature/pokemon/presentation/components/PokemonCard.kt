@@ -54,10 +54,6 @@ fun PokemonCard(
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
     val primaryType = pokemon.types.firstOrNull()?.name ?: "normal"
-    val typeGradient = listOf(
-        typeColor(primaryType).copy(alpha = 0.15f),
-        Color.Transparent,
-    )
 
     val view = LocalView.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -79,7 +75,7 @@ fun PokemonCard(
             .scale(cardScale),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
@@ -99,7 +95,12 @@ fun PokemonCard(
                         )
                         .clip(RoundedCornerShape(12.dp))
                         .background(
-                            Brush.verticalGradient(colors = typeGradient),
+                            Brush.verticalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                                    Color.Transparent,
+                                ),
+                            ),
                         )
                 }
             } else {
@@ -108,7 +109,12 @@ fun PokemonCard(
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(12.dp))
                     .background(
-                        Brush.verticalGradient(colors = typeGradient),
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                                Color.Transparent,
+                            ),
+                        ),
                     )
             }
 

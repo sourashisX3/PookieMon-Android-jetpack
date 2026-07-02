@@ -19,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.funapp.pookiemon.core.ui.components.rememberShimmerBrush
 import com.funapp.pookiemon.core.ui.components.shimmerEffect
@@ -44,7 +43,6 @@ fun DetailShimmer(modifier: Modifier = Modifier) {
                 Box(
                     modifier = Modifier
                         .size(200.dp)
-                        .clip(RoundedCornerShape(20.dp))
                         .shimmerEffect(brush, RoundedCornerShape(20.dp)),
                 )
                 Spacer(modifier = Modifier.height(12.dp))
@@ -89,40 +87,72 @@ fun DetailShimmer(modifier: Modifier = Modifier) {
         ) {
             Spacer(modifier = Modifier.height(4.dp))
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .shimmerEffect(brush, RoundedCornerShape(16.dp)),
-            )
+            ShimmerCard(brush = brush) {
+                ShimmerTitle(brush)
+                repeat(3) {
+                    Box(modifier = Modifier.fillMaxWidth(0.75f).height(12.dp).shimmerEffect(brush, RoundedCornerShape(4.dp)))
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+            }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .shimmerEffect(brush, RoundedCornerShape(16.dp)),
-            )
+            ShimmerCard(brush = brush) {
+                ShimmerTitle(brush)
+                ShimmerLine(brush, 0.4f, 0.5f)
+                Spacer(modifier = Modifier.height(4.dp))
+                ShimmerLine(brush, 0.35f, 0.55f)
+                Spacer(modifier = Modifier.height(4.dp))
+                ShimmerLine(brush, 0.45f, 0.4f)
+            }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .shimmerEffect(brush, RoundedCornerShape(16.dp)),
-            )
+            ShimmerCard(brush = brush) {
+                ShimmerTitle(brush)
+                repeat(6) {
+                    ShimmerLine(brush, 0.5f, 0.3f)
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+            }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .shimmerEffect(brush, RoundedCornerShape(16.dp)),
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(140.dp)
-                    .shimmerEffect(brush, RoundedCornerShape(16.dp)),
-            )
+            ShimmerCard(brush = brush) {
+                ShimmerTitle(brush)
+                ShimmerLine(brush, 0.4f, 0.5f)
+            }
         }
+    }
+}
+
+@Composable
+private fun ShimmerTitle(brush: androidx.compose.ui.graphics.Brush) {
+    Box(modifier = Modifier.fillMaxWidth(0.3f).height(16.dp).shimmerEffect(brush, RoundedCornerShape(4.dp)))
+    Spacer(modifier = Modifier.height(10.dp))
+}
+
+@Composable
+private fun ShimmerLine(brush: androidx.compose.ui.graphics.Brush, labelWeight: Float, valueWeight: Float) {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .weight(labelWeight)
+                .height(12.dp)
+                .shimmerEffect(brush, RoundedCornerShape(4.dp)),
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Box(
+            modifier = Modifier
+                .weight(valueWeight)
+                .height(12.dp)
+                .shimmerEffect(brush, RoundedCornerShape(4.dp)),
+        )
+    }
+}
+
+@Composable
+private fun ShimmerCard(brush: androidx.compose.ui.graphics.Brush, content: @Composable () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shimmerEffect(brush, RoundedCornerShape(16.dp))
+            .padding(16.dp),
+    ) {
+        Column { content() }
     }
 }

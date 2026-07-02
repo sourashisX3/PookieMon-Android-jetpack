@@ -98,6 +98,7 @@ dependencies {
 
     implementation(libs.coil.compose)
     implementation(libs.lottie.compose)
+    implementation(libs.androidx.datastore)
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))

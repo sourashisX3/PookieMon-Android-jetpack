@@ -8,8 +8,10 @@ import com.funapp.pookiemon.feature.pokemon.presentation.events.PokemonListUiEve
 import com.funapp.pookiemon.feature.pokemon.presentation.states.PokemonListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,11 +22,9 @@ class PokemonListViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PokemonListUiState())
-    val uiState: StateFlow<PokemonListUiState> = _uiState.asStateFlow()
-
-    init {
-        loadPokemon()
-    }
+    val uiState: StateFlow<PokemonListUiState> = _uiState
+        .onStart { loadPokemon() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), PokemonListUiState())
 
     fun onEvent(event: PokemonListUiEvent) {
         when (event) {

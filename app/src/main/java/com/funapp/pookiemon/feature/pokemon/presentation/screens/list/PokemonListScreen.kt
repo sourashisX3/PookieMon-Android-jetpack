@@ -2,40 +2,27 @@ package com.funapp.pookiemon.feature.pokemon.presentation.screens.list
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -43,6 +30,7 @@ import com.funapp.pookiemon.R
 import com.funapp.pookiemon.core.config.navigation.Route
 import com.funapp.pookiemon.core.ui.components.AppErrorView
 import com.funapp.pookiemon.core.ui.components.AppTopBar
+import com.funapp.pookiemon.core.ui.components.ScrollToTopButton
 import com.funapp.pookiemon.feature.pokemon.presentation.components.PokemonCard
 import com.funapp.pookiemon.feature.pokemon.presentation.components.PokemonCardShimmer
 import com.funapp.pookiemon.feature.pokemon.presentation.events.PokemonListUiEvent
@@ -67,20 +55,6 @@ fun PokemonListScreen(
             lastVisible >= totalItems - 4 && totalItems > 0 && uiState.hasMore && !uiState.isLoadingMore
         }
     }
-
-    val showScrollToTop by remember {
-        derivedStateOf {
-            gridState.firstVisibleItemIndex > 3
-        }
-    }
-
-    val scrollAlpha by animateFloatAsState(
-        targetValue = if (showScrollToTop) 1f else 0f,
-        animationSpec = tween(300),
-        label = "scrollAlpha",
-    )
-
-    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(shouldLoadMore) {
         if (shouldLoadMore) {
@@ -162,31 +136,12 @@ fun PokemonListScreen(
                 }
             }
 
-            if (scrollAlpha > 0f) {
-                Surface(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 16.dp)
-                        .size(44.dp)
-                        .clickable { coroutineScope.launch { gridState.animateScrollToItem(0) } },
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
-                    shadowElevation = 6.dp,
-                    tonalElevation = 3.dp,
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowUp,
-                            contentDescription = stringResource(R.string.scroll_to_top),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(22.dp),
-                        )
-                    }
-                }
-            }
+            ScrollToTopButton(
+                gridState = gridState,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 16.dp),
+            )
         }
     }
 }

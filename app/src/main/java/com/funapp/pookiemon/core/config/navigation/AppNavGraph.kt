@@ -8,41 +8,203 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CatchingPokemon
+import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.HistoryEdu
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.funapp.pookiemon.R
+import com.funapp.pookiemon.core.utils.performClickHaptic
+import com.funapp.pookiemon.feature.berry.presentation.screens.BerryDetailScreen
+import com.funapp.pookiemon.feature.berry.presentation.screens.BerryListScreen
+import com.funapp.pookiemon.feature.encounter.presentation.screens.EncounterDetailScreen
+import com.funapp.pookiemon.feature.encounter.presentation.screens.EncounterListScreen
+import com.funapp.pookiemon.feature.evolution.presentation.screens.EvolutionViewerScreen
+import com.funapp.pookiemon.feature.explore.presentation.screens.ExploreScreen
+import com.funapp.pookiemon.feature.games.presentation.screens.GamesListScreen
+import com.funapp.pookiemon.feature.games.presentation.screens.GenerationDetailScreen
+import com.funapp.pookiemon.feature.item.presentation.screens.ItemDetailScreen
+import com.funapp.pookiemon.feature.item.presentation.screens.ItemListScreen
+import com.funapp.pookiemon.feature.location.presentation.screens.LocationDetailScreen
+import com.funapp.pookiemon.feature.location.presentation.screens.LocationListScreen
+import com.funapp.pookiemon.feature.move.presentation.screens.MoveDetailScreen
+import com.funapp.pookiemon.feature.move.presentation.screens.MoveListScreen
 import com.funapp.pookiemon.feature.pokemon.presentation.screens.detail.DetailScreen
 import com.funapp.pookiemon.feature.pokemon.presentation.screens.list.PokemonListScreen
+import com.funapp.pookiemon.feature.references.presentation.screens.AbilityDetailScreen
+import com.funapp.pookiemon.feature.references.presentation.screens.NatureDetailScreen
+import com.funapp.pookiemon.feature.references.presentation.screens.ReferencesScreen
+import com.funapp.pookiemon.feature.references.presentation.screens.TypeDetailScreen
+import com.funapp.pookiemon.feature.settings.presentation.screens.SettingsScreen
+
+private val tabIcons: Map<BottomNavTab, ImageVector> = mapOf(
+    BottomNavTab.Pokemon to Icons.Default.CatchingPokemon,
+    BottomNavTab.Items to Icons.Default.HistoryEdu,
+    BottomNavTab.Moves to Icons.Default.Star,
+    BottomNavTab.Explore to Icons.Default.Explore,
+    BottomNavTab.Settings to Icons.Default.Settings,
+)
 
 @Composable
 fun AppNavGraph() {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
 
-    SharedTransitionLayout {
-        NavHost(
-            navController = navController,
-            startDestination = Route.PookieMonRoute,
-        ) {
-            navigation<Route.PookieMonRoute>(
-                startDestination = Route.PokemonListRoute,
+    val showBottomBar = currentDestination?.hasRoute<Route.PokemonListRoute>() == true ||
+        currentDestination?.hasRoute<Route.ItemListRoute>() == true ||
+        currentDestination?.hasRoute<Route.MoveListRoute>() == true ||
+        currentDestination?.hasRoute<Route.ExploreRoute>() == true ||
+        currentDestination?.hasRoute<Route.BerryListRoute>() == true ||
+        currentDestination?.hasRoute<Route.EvolutionViewerRoute>() == true ||
+        currentDestination?.hasRoute<Route.LocationListRoute>() == true ||
+        currentDestination?.hasRoute<Route.EncounterListRoute>() == true ||
+        currentDestination?.hasRoute<Route.GamesListRoute>() == true ||
+        currentDestination?.hasRoute<Route.ReferencesRoute>() == true ||
+        currentDestination?.hasRoute<Route.SettingsRoute>() == true
+
+    val view = LocalView.current
+
+    Scaffold(
+            bottomBar = {
+                if (showBottomBar) {
+                    NavigationBar(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+                        tonalElevation = 0.dp,
+                    ) {
+                        BottomNavTab.entries.forEach { tab ->
+                            val selected = currentDestination?.hasRoute(tab.route::class) == true
+                            NavigationBarItem(
+                                selected = selected,
+                                onClick = {
+                                    view.performClickHaptic()
+                                    navController.navigate(tab.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                },
+                                icon = {
+                                    Icon(
+                                        imageVector = tabIcons[tab] ?: Icons.Default.CatchingPokemon,
+                                        contentDescription = stringResource(R.string.tab_pokemon),
+                                    )
+                                },
+                                label = {
+                                    Text(
+                                        text = when (tab) {
+                                            BottomNavTab.Pokemon -> stringResource(R.string.tab_pokemon)
+                                            BottomNavTab.Items -> stringResource(R.string.tab_items)
+                                            BottomNavTab.Moves -> stringResource(R.string.tab_moves)
+                                            BottomNavTab.Explore -> stringResource(R.string.tab_explore)
+                                            BottomNavTab.Settings -> stringResource(R.string.tab_settings)
+                                        },
+                                    )
+                                },
+                                colors = NavigationBarItemDefaults.colors(
+                                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                                ),
+                            )
+                        }
+                    }
+                }
+            },
+        ) { innerPadding ->
+            SharedTransitionLayout {
+                NavHost(
+                navController = navController,
+                startDestination = Route.PookieMonRoute,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = innerPadding.calculateBottomPadding()),
             ) {
-                composable<Route.PokemonListRoute> {
+                navigation<Route.PookieMonRoute>(
+                    startDestination = Route.PokemonListRoute,
+                ) {
+                    composable<Route.PokemonListRoute> {
+                        val sharedTransitionScope: SharedTransitionScope = this@SharedTransitionLayout
+                        val animatedVisibilityScope: AnimatedVisibilityScope = this
+                        PokemonListScreen(
+                            navController = navController,
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                        )
+                    }
+
+                    composable<Route.PokemonDetailRoute>(
+                        enterTransition = {
+                            fadeIn(animationSpec = tween(300, delayMillis = 80)) +
+                                scaleIn(initialScale = 0.92f, animationSpec = tween(350))
+                        },
+                        exitTransition = {
+                            fadeOut(animationSpec = tween(200))
+                        },
+                        popEnterTransition = {
+                            fadeIn(animationSpec = tween(200))
+                        },
+                        popExitTransition = {
+                            fadeOut(animationSpec = tween(200)) +
+                                scaleOut(targetScale = 0.92f, animationSpec = tween(250))
+                        },
+                    ) { backStackEntry ->
+                        val sharedTransitionScope: SharedTransitionScope = this@SharedTransitionLayout
+                        val animatedVisibilityScope: AnimatedVisibilityScope = this
+                        val route = backStackEntry.toRoute<Route.PokemonDetailRoute>()
+                        DetailScreen(
+                            onNavigateBack = { navController.popBackStack() },
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                        )
+                    }
+                }
+
+                composable<Route.ItemListRoute> {
                     val sharedTransitionScope: SharedTransitionScope = this@SharedTransitionLayout
                     val animatedVisibilityScope: AnimatedVisibilityScope = this
-                    PokemonListScreen(
+                    ItemListScreen(
                         navController = navController,
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope,
                     )
                 }
 
-                composable<Route.PokemonDetailRoute>(
+                composable<Route.ItemDetailRoute>(
                     enterTransition = {
                         fadeIn(animationSpec = tween(300, delayMillis = 80)) +
-                        scaleIn(initialScale = 0.92f, animationSpec = tween(350))
+                            scaleIn(initialScale = 0.92f, animationSpec = tween(350))
                     },
                     exitTransition = {
                         fadeOut(animationSpec = tween(200))
@@ -52,19 +214,270 @@ fun AppNavGraph() {
                     },
                     popExitTransition = {
                         fadeOut(animationSpec = tween(200)) +
-                        scaleOut(targetScale = 0.92f, animationSpec = tween(250))
+                            scaleOut(targetScale = 0.92f, animationSpec = tween(250))
                     },
-                ) { backStackEntry ->
+                ) {
                     val sharedTransitionScope: SharedTransitionScope = this@SharedTransitionLayout
                     val animatedVisibilityScope: AnimatedVisibilityScope = this
-                    val route = backStackEntry.toRoute<Route.PokemonDetailRoute>()
-                    DetailScreen(
+                    ItemDetailScreen(
                         onNavigateBack = { navController.popBackStack() },
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope,
                     )
                 }
+
+                composable<Route.MoveListRoute> {
+                    val sharedTransitionScope: SharedTransitionScope = this@SharedTransitionLayout
+                    val animatedVisibilityScope: AnimatedVisibilityScope = this
+                    MoveListScreen(
+                        navController = navController,
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                    )
+                }
+
+                composable<Route.MoveDetailRoute>(
+                    enterTransition = {
+                        fadeIn(animationSpec = tween(300, delayMillis = 80)) +
+                            scaleIn(initialScale = 0.92f, animationSpec = tween(350))
+                    },
+                    exitTransition = {
+                        fadeOut(animationSpec = tween(200))
+                    },
+                    popEnterTransition = {
+                        fadeIn(animationSpec = tween(200))
+                    },
+                    popExitTransition = {
+                        fadeOut(animationSpec = tween(200)) +
+                            scaleOut(targetScale = 0.92f, animationSpec = tween(250))
+                    },
+                ) {
+                    val sharedTransitionScope: SharedTransitionScope = this@SharedTransitionLayout
+                    val animatedVisibilityScope: AnimatedVisibilityScope = this
+                    MoveDetailScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                    )
+                }
+
+                composable<Route.ExploreRoute> {
+                    ExploreScreen(
+                        onCategoryClick = { category ->
+                            val route: Route = when (category) {
+                                "berries" -> Route.BerryListRoute()
+                                "locations" -> Route.LocationListRoute()
+                                "evolution" -> Route.EvolutionViewerRoute()
+                                "encounters" -> Route.EncounterListRoute()
+                                "games" -> Route.GamesListRoute
+                                "references" -> Route.ReferencesRoute
+                                else -> Route.BerryListRoute()
+                            }
+                            navController.navigate(route)
+                        },
+                    )
+                }
+
+                composable<Route.BerryListRoute> {
+                    BerryListScreen(navController = navController)
+                }
+
+                composable<Route.BerryDetailRoute>(
+                    enterTransition = {
+                        fadeIn(animationSpec = tween(300, delayMillis = 80)) +
+                            scaleIn(initialScale = 0.92f, animationSpec = tween(350))
+                    },
+                    exitTransition = {
+                        fadeOut(animationSpec = tween(200))
+                    },
+                    popEnterTransition = {
+                        fadeIn(animationSpec = tween(200))
+                    },
+                    popExitTransition = {
+                        fadeOut(animationSpec = tween(200)) +
+                            scaleOut(targetScale = 0.92f, animationSpec = tween(250))
+                    },
+                ) {
+                    BerryDetailScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                    )
+                }
+
+                composable<Route.EvolutionViewerRoute> {
+                    EvolutionViewerScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                    )
+                }
+
+                composable<Route.LocationListRoute> {
+                    LocationListScreen(navController = navController)
+                }
+
+                composable<Route.LocationDetailRoute>(
+                    enterTransition = {
+                        fadeIn(animationSpec = tween(300, delayMillis = 80)) +
+                            scaleIn(initialScale = 0.92f, animationSpec = tween(350))
+                    },
+                    exitTransition = {
+                        fadeOut(animationSpec = tween(200))
+                    },
+                    popEnterTransition = {
+                        fadeIn(animationSpec = tween(200))
+                    },
+                    popExitTransition = {
+                        fadeOut(animationSpec = tween(200)) +
+                            scaleOut(targetScale = 0.92f, animationSpec = tween(250))
+                    },
+                ) {
+                    LocationDetailScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                    )
+                }
+
+                composable<Route.EncounterListRoute> {
+                    EncounterListScreen(navController = navController)
+                }
+
+                composable<Route.EncounterDetailRoute>(
+                    enterTransition = {
+                        fadeIn(animationSpec = tween(300, delayMillis = 80)) +
+                            scaleIn(initialScale = 0.92f, animationSpec = tween(350))
+                    },
+                    exitTransition = {
+                        fadeOut(animationSpec = tween(200))
+                    },
+                    popEnterTransition = {
+                        fadeIn(animationSpec = tween(200))
+                    },
+                    popExitTransition = {
+                        fadeOut(animationSpec = tween(200)) +
+                            scaleOut(targetScale = 0.92f, animationSpec = tween(250))
+                    },
+                ) {
+                    EncounterDetailScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                    )
+                }
+
+                composable<Route.GamesListRoute> {
+                    GamesListScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        onGenerationClick = { genId -> navController.navigate(Route.GenerationDetailRoute(genId)) },
+                    )
+                }
+
+                composable<Route.GenerationDetailRoute>(
+                    enterTransition = {
+                        fadeIn(animationSpec = tween(300, delayMillis = 80)) +
+                            scaleIn(initialScale = 0.92f, animationSpec = tween(350))
+                    },
+                    exitTransition = {
+                        fadeOut(animationSpec = tween(200))
+                    },
+                    popEnterTransition = {
+                        fadeIn(animationSpec = tween(200))
+                    },
+                    popExitTransition = {
+                        fadeOut(animationSpec = tween(200)) +
+                            scaleOut(targetScale = 0.92f, animationSpec = tween(250))
+                    },
+                ) {
+                    GenerationDetailScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                    )
+                }
+
+                composable<Route.ReferencesRoute> {
+                    ReferencesScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        onAbilityClick = { id -> navController.navigate(Route.AbilityDetailRoute(id)) },
+                        onTypeClick = { id -> navController.navigate(Route.TypeDetailRoute(id)) },
+                        onNatureClick = { id -> navController.navigate(Route.NatureDetailRoute(id)) },
+                    )
+                }
+
+                composable<Route.AbilityDetailRoute>(
+                    enterTransition = {
+                        fadeIn(animationSpec = tween(300, delayMillis = 80)) +
+                            scaleIn(initialScale = 0.92f, animationSpec = tween(350))
+                    },
+                    exitTransition = {
+                        fadeOut(animationSpec = tween(200))
+                    },
+                    popEnterTransition = {
+                        fadeIn(animationSpec = tween(200))
+                    },
+                    popExitTransition = {
+                        fadeOut(animationSpec = tween(200)) +
+                            scaleOut(targetScale = 0.92f, animationSpec = tween(250))
+                    },
+                ) {
+                    AbilityDetailScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                    )
+                }
+
+                composable<Route.TypeDetailRoute>(
+                    enterTransition = {
+                        fadeIn(animationSpec = tween(300, delayMillis = 80)) +
+                            scaleIn(initialScale = 0.92f, animationSpec = tween(350))
+                    },
+                    exitTransition = {
+                        fadeOut(animationSpec = tween(200))
+                    },
+                    popEnterTransition = {
+                        fadeIn(animationSpec = tween(200))
+                    },
+                    popExitTransition = {
+                        fadeOut(animationSpec = tween(200)) +
+                            scaleOut(targetScale = 0.92f, animationSpec = tween(250))
+                    },
+                ) {
+                    TypeDetailScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                    )
+                }
+
+                composable<Route.NatureDetailRoute>(
+                    enterTransition = {
+                        fadeIn(animationSpec = tween(300, delayMillis = 80)) +
+                            scaleIn(initialScale = 0.92f, animationSpec = tween(350))
+                    },
+                    exitTransition = {
+                        fadeOut(animationSpec = tween(200))
+                    },
+                    popEnterTransition = {
+                        fadeIn(animationSpec = tween(200))
+                    },
+                    popExitTransition = {
+                        fadeOut(animationSpec = tween(200)) +
+                            scaleOut(targetScale = 0.92f, animationSpec = tween(250))
+                    },
+                ) {
+                    NatureDetailScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                    )
+                }
+
+                composable<Route.SettingsRoute> {
+                    SettingsScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                    )
+                }
+            }
             }
         }
+}
+ 
+@Composable
+private fun ComingSoonPlaceholder(title: String) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = "$title - ${stringResource(R.string.coming_soon)}",
+            style = MaterialTheme.typography.headlineSmall,
+        )
     }
 }

@@ -3,6 +3,8 @@ package com.funapp.pookiemon.core.di
 import android.content.Context
 import androidx.room.Room
 import com.funapp.pookiemon.core.database.AppDatabase
+import com.funapp.pookiemon.feature.item.data.dao.ItemCacheDao
+import com.funapp.pookiemon.feature.move.data.dao.MoveCacheDao
 import com.funapp.pookiemon.feature.pokemon.data.dao.PokemonCacheDao
 import dagger.Module
 import dagger.Provides
@@ -31,5 +33,17 @@ object DatabaseModule {
     @Singleton
     fun providePokemonCacheDao(database: AppDatabase): PokemonCacheDao {
         return database.pokemonCacheDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideItemCacheDao(database: AppDatabase): ItemCacheDao {
+        return database.itemCacheDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMoveCacheDao(database: AppDatabase): MoveCacheDao {
+        return database.moveCacheDao()
     }
 }

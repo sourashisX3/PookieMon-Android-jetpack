@@ -7,6 +7,7 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.view.HapticFeedbackConstants
 import android.view.View
+import androidx.annotation.RequiresApi
 
 fun View.performClickHaptic() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -28,6 +29,7 @@ fun View.performErrorHaptic() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun Context.vibrateOnce(durationMs: Long = 50) {
     val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager

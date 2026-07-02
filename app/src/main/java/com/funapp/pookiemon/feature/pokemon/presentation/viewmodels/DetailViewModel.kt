@@ -9,8 +9,10 @@ import com.funapp.pookiemon.feature.pokemon.presentation.events.DetailUiEvent
 import com.funapp.pookiemon.feature.pokemon.presentation.states.DetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,11 +26,9 @@ class DetailViewModel @Inject constructor(
     private val pokemonId: Int = savedStateHandle.get<Int>("pokemonId") ?: 1
 
     private val _uiState = MutableStateFlow(DetailUiState())
-    val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()
-
-    init {
-        loadDetail()
-    }
+    val uiState: StateFlow<DetailUiState> = _uiState
+        .onStart { loadDetail() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), DetailUiState())
 
     fun onEvent(event: DetailUiEvent) {
         when (event) {
