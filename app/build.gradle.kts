@@ -30,16 +30,19 @@ android {
             dimension = "environment"
             applicationIdSuffix = ".dev"
             buildConfigField("String", "BUILD_ENV", "\"DEV\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://pokeapi.co/api/v2/\"")
         }
         create("staging") {
             dimension = "environment"
             applicationIdSuffix = ".staging"
             buildConfigField("String", "BUILD_ENV", "\"STAGING\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://pokeapi.co/api/v2/\"")
         }
         create("prod") {
             dimension = "environment"
             applicationIdSuffix = ""
             buildConfigField("String", "BUILD_ENV", "\"PROD\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://pokeapi.co/api/v2/\"")
         }
     }
 
@@ -93,6 +96,7 @@ dependencies {
     ksp(libs.room.compiler)
 
     implementation(libs.coil.compose)
+    implementation(libs.lottie.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))

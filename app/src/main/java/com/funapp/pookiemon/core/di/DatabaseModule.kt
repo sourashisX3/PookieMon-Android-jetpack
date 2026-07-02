@@ -3,7 +3,7 @@ package com.funapp.pookiemon.core.di
 import android.content.Context
 import androidx.room.Room
 import com.funapp.pookiemon.core.database.AppDatabase
-import com.funapp.pookiemon.core.database.PokemonCacheDao
+import com.funapp.pookiemon.feature.pokemon.data.dao.PokemonCacheDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

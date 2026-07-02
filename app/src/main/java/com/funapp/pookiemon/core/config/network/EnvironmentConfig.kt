@@ -5,10 +5,8 @@ import com.funapp.pookiemon.BuildConfig
 import javax.inject.Inject
 import javax.inject.Singleton
 
-enum class BuildEnvironment(val baseUrl: String) {
-    DEV("https://pokeapi.co/api/v2/"),
-    STAGING("https://pokeapi.co/api/v2/"),
-    PROD("https://pokeapi.co/api/v2/");
+enum class BuildEnvironment {
+    DEV, STAGING, PROD;
 
     companion object {
         fun fromName(name: String): BuildEnvironment {
@@ -20,7 +18,7 @@ enum class BuildEnvironment(val baseUrl: String) {
 @Singleton
 class EnvironmentConfig @Inject constructor() {
     val currentEnvironment: BuildEnvironment = BuildEnvironment.fromName(BuildConfig.BUILD_ENV)
-    val baseUrl: String get() = currentEnvironment.baseUrl
+    val baseUrl: String get() = BuildConfig.API_BASE_URL
 
     init {
         Log.d("EnvironmentConfig", "Current environment: ${currentEnvironment.name}, Base URL: $baseUrl")

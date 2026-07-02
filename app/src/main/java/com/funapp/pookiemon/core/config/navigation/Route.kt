@@ -8,7 +8,7 @@ sealed interface Route {
     data object PookieMonRoute : Route
 
     @Serializable
-    data object HomeRoute : Route
+    data object PokemonListRoute : Route
 
     @Serializable
     data class PokemonDetailRoute(val pokemonId: Int) : Route

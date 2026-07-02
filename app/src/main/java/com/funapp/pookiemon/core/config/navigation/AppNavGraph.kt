@@ -14,8 +14,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.funapp.pookiemon.feature.home.presentation.detail.DetailScreen
-import com.funapp.pookiemon.feature.home.presentation.list.HomeScreen
+import com.funapp.pookiemon.feature.pokemon.presentation.screens.detail.DetailScreen
+import com.funapp.pookiemon.feature.pokemon.presentation.screens.list.PokemonListScreen
 
 @Composable
 fun AppNavGraph() {
@@ -27,12 +27,12 @@ fun AppNavGraph() {
             startDestination = Route.PookieMonRoute,
         ) {
             navigation<Route.PookieMonRoute>(
-                startDestination = Route.HomeRoute,
+                startDestination = Route.PokemonListRoute,
             ) {
-                composable<Route.HomeRoute> {
+                composable<Route.PokemonListRoute> {
                     val sharedTransitionScope: SharedTransitionScope = this@SharedTransitionLayout
                     val animatedVisibilityScope: AnimatedVisibilityScope = this
-                    HomeScreen(
+                    PokemonListScreen(
                         navController = navController,
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope,

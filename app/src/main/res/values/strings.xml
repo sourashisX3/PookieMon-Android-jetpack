@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">PookieMon</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="retry">Retry</string>
+    <string name="scroll_to_top">Scroll to top</string>
+    <string name="base_stats">Base Stats</string>
+    <string name="abilities">Abilities</string>
+    <string name="description">Description</string>
+    <string name="details">Details</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="base_xp">Base XP</string>
+    <string name="habitat">Habitat</string>
+    <string name="legendary">Legendary</string>
+    <string name="mythical">Mythical</string>
+    <string name="evolves_from">Evolves From</string>
+    <string name="pokemon_default">Pokemon</string>
+    <string name="meters_format">%.1f m</string>
+    <string name="kg_format">%.1f kg</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="unknown_error">Unknown error</string>
 </resources>
