@@ -20,4 +20,15 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="unknown_error">Unknown error</string>
+    <string name="egg_groups">Egg Groups</string>
+    <string name="growth_rate">Growth Rate</string>
+    <string name="generation">Generation</string>
+    <string name="capture_rate">Capture Rate</string>
+    <string name="base_happiness">Base Happiness</string>
+    <string name="hatch_counter">Hatch Counter</string>
+    <string name="shape">Shape</string>
+    <string name="baby">Baby</string>
+    <string name="gender_differences">Gender Differences</string>
+    <string name="forms">Forms</string>
+    <string name="held_items">Held Items</string>
 </resources>

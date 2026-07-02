@@ -29,7 +29,16 @@ fun PokemonSpeciesDto.toDomain(): PokemonSpecies {
         habitat = habitat?.name,
         isLegendary = is_legendary,
         isMythical = is_mythical,
+        isBaby = is_baby,
+        hasGenderDifferences = has_gender_differences,
         evolutionChainId = evoChainId,
         evolvesFromSpecies = evolves_from_species?.name,
+        eggGroups = egg_groups.map { it.name },
+        growthRate = growth_rate?.name,
+        generation = generation?.name,
+        captureRate = capture_rate,
+        baseHappiness = base_happiness,
+        hatchCounter = hatch_counter,
+        shape = shape?.name,
     )
 }

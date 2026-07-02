@@ -252,25 +252,33 @@ private fun PokemonDetailContent(
                     }
                 }
 
-                if (species != null && (species.isLegendary || species.isMythical)) {
+                if (species != null && (species.isLegendary || species.isMythical || species.isBaby)) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.AutoAwesome,
-                            contentDescription = null,
-                            tint = if (species.isLegendary) colorResource(com.funapp.pookiemon.R.color.legendary_gold) else colorResource(com.funapp.pookiemon.R.color.mythical_pink),
-                            modifier = Modifier.size(16.dp),
-                        )
-                        Text(
-                            text = if (species.isLegendary) stringResource(com.funapp.pookiemon.R.string.legendary) else stringResource(com.funapp.pookiemon.R.string.mythical),
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.Bold,
-                            ),
-                            color = if (species.isLegendary) colorResource(com.funapp.pookiemon.R.color.legendary_gold) else colorResource(com.funapp.pookiemon.R.color.mythical_pink),
-                        )
+                        if (species.isLegendary) {
+                            BadgeChip(
+                                icon = Icons.Default.AutoAwesome,
+                                text = stringResource(com.funapp.pookiemon.R.string.legendary),
+                                tint = colorResource(com.funapp.pookiemon.R.color.legendary_gold),
+                            )
+                        }
+                        if (species.isMythical) {
+                            BadgeChip(
+                                icon = Icons.Default.AutoAwesome,
+                                text = stringResource(com.funapp.pookiemon.R.string.mythical),
+                                tint = colorResource(com.funapp.pookiemon.R.color.mythical_pink),
+                            )
+                        }
+                        if (species.isBaby) {
+                            BadgeChip(
+                                icon = Icons.Default.Star,
+                                text = stringResource(com.funapp.pookiemon.R.string.baby),
+                                tint = colorResource(com.funapp.pookiemon.R.color.legendary_gold),
+                            )
+                        }
                     }
                 }
             }
@@ -438,20 +446,58 @@ private fun PokemonDetailContent(
                         species.habitat?.let {
                             InfoRow(label = stringResource(com.funapp.pookiemon.R.string.habitat), value = it.replaceFirstChar { c -> c.uppercase() })
                         }
-                        InfoRow(
-                            label = stringResource(com.funapp.pookiemon.R.string.legendary),
-                            value = if (species.isLegendary) stringResource(com.funapp.pookiemon.R.string.legendary) else stringResource(com.funapp.pookiemon.R.string.no),
-                        )
-                        InfoRow(
-                            label = stringResource(com.funapp.pookiemon.R.string.mythical),
-                            value = if (species.isMythical) stringResource(com.funapp.pookiemon.R.string.mythical) else stringResource(com.funapp.pookiemon.R.string.no),
-                        )
+                        if (species.eggGroups.isNotEmpty()) {
+                            InfoRow(
+                                label = stringResource(com.funapp.pookiemon.R.string.egg_groups),
+                                value = species.eggGroups.joinToString(", ") { it.replaceFirstChar { c -> c.uppercase() } },
+                            )
+                        }
+                        species.generation?.let {
+                            InfoRow(
+                                label = stringResource(com.funapp.pookiemon.R.string.generation),
+                                value = it.replaceFirstChar { c -> c.uppercase() }.replace("-", " "),
+                            )
+                        }
+                        species.growthRate?.let {
+                            InfoRow(
+                                label = stringResource(com.funapp.pookiemon.R.string.growth_rate),
+                                value = it.replaceFirstChar { c -> c.uppercase() }.replace("-", " "),
+                            )
+                        }
+                        species.shape?.let {
+                            InfoRow(
+                                label = stringResource(com.funapp.pookiemon.R.string.shape),
+                                value = it.replaceFirstChar { c -> c.uppercase() },
+                            )
+                        }
+                        species.captureRate?.let {
+                            InfoRow(
+                                label = stringResource(com.funapp.pookiemon.R.string.capture_rate),
+                                value = it.toString(),
+                            )
+                        }
+                        species.baseHappiness?.let {
+                            InfoRow(
+                                label = stringResource(com.funapp.pookiemon.R.string.base_happiness),
+                                value = it.toString(),
+                            )
+                        }
+                        species.hatchCounter?.let {
+                            InfoRow(
+                                label = stringResource(com.funapp.pookiemon.R.string.hatch_counter),
+                                value = it.toString(),
+                            )
+                        }
                         species.evolvesFromSpecies?.let {
                             InfoRow(
                                 label = stringResource(com.funapp.pookiemon.R.string.evolves_from),
                                 value = it.replaceFirstChar { c -> c.uppercase() }.replace("-", " "),
                             )
                         }
+                        InfoRow(
+                            label = stringResource(com.funapp.pookiemon.R.string.gender_differences),
+                            value = if (species.hasGenderDifferences) stringResource(com.funapp.pookiemon.R.string.yes) else stringResource(com.funapp.pookiemon.R.string.no),
+                        )
                     }
                 }
             }
@@ -473,6 +519,34 @@ private fun colorFromName(name: String): Color = when (name.lowercase()) {
     "white" -> Color(0xFF9CA3AF)
     "yellow" -> Color(0xFFEAB308)
     else -> Color.Gray
+}
+
+@Composable
+private fun BadgeChip(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    text: String,
+    tint: Color,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(3.dp),
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = tint,
+            modifier = Modifier.size(14.dp),
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Bold,
+            ),
+            color = tint,
+        )
+    }
 }
 
 @Composable
