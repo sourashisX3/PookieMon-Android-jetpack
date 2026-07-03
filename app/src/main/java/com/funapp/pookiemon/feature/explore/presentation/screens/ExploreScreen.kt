@@ -89,6 +89,10 @@ fun ExploreScreen(
                     modifier = Modifier.animateItem(),
                 )
             }
+
+            item {
+                Box(modifier = Modifier.height(96.dp))
+            }
         }
     }
 }

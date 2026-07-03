@@ -11,27 +11,14 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CatchingPokemon
-import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.HistoryEdu
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -41,7 +28,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.funapp.pookiemon.R
-import com.funapp.pookiemon.core.utils.performClickHaptic
+import com.funapp.pookiemon.core.ui.components.navigation.FloatingNavBar
 import com.funapp.pookiemon.feature.berry.presentation.screens.BerryDetailScreen
 import com.funapp.pookiemon.feature.berry.presentation.screens.BerryListScreen
 import com.funapp.pookiemon.feature.encounter.presentation.screens.EncounterDetailScreen
@@ -64,14 +51,6 @@ import com.funapp.pookiemon.feature.references.presentation.screens.ReferencesSc
 import com.funapp.pookiemon.feature.references.presentation.screens.TypeDetailScreen
 import com.funapp.pookiemon.feature.settings.presentation.screens.SettingsScreen
 
-private val tabIcons: Map<BottomNavTab, ImageVector> = mapOf(
-    BottomNavTab.Pokemon to Icons.Default.CatchingPokemon,
-    BottomNavTab.Items to Icons.Default.HistoryEdu,
-    BottomNavTab.Moves to Icons.Default.Star,
-    BottomNavTab.Explore to Icons.Default.Explore,
-    BottomNavTab.Settings to Icons.Default.Settings,
-)
-
 @Composable
 fun AppNavGraph() {
     val navController = rememberNavController()
@@ -90,67 +69,15 @@ fun AppNavGraph() {
         currentDestination?.hasRoute<Route.ReferencesRoute>() == true ||
         currentDestination?.hasRoute<Route.SettingsRoute>() == true
 
-    val view = LocalView.current
-
-    Scaffold(
-            bottomBar = {
-                if (showBottomBar) {
-                    NavigationBar(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
-                        tonalElevation = 0.dp,
-                    ) {
-                        BottomNavTab.entries.forEach { tab ->
-                            val selected = currentDestination?.hasRoute(tab.route::class) == true
-                            NavigationBarItem(
-                                selected = selected,
-                                onClick = {
-                                    view.performClickHaptic()
-                                    navController.navigate(tab.route) {
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                },
-                                icon = {
-                                    Icon(
-                                        imageVector = tabIcons[tab] ?: Icons.Default.CatchingPokemon,
-                                        contentDescription = stringResource(R.string.tab_pokemon),
-                                    )
-                                },
-                                label = {
-                                    Text(
-                                        text = when (tab) {
-                                            BottomNavTab.Pokemon -> stringResource(R.string.tab_pokemon)
-                                            BottomNavTab.Items -> stringResource(R.string.tab_items)
-                                            BottomNavTab.Moves -> stringResource(R.string.tab_moves)
-                                            BottomNavTab.Explore -> stringResource(R.string.tab_explore)
-                                            BottomNavTab.Settings -> stringResource(R.string.tab_settings)
-                                        },
-                                    )
-                                },
-                                colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                                ),
-                            )
-                        }
-                    }
-                }
-            },
-        ) { innerPadding ->
-            SharedTransitionLayout {
-                NavHost(
-                navController = navController,
-                startDestination = Route.PookieMonRoute,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = innerPadding.calculateBottomPadding()),
-            ) {
+    Scaffold { innerPadding ->
+            Box(Modifier.fillMaxSize()) {
+                SharedTransitionLayout {
+                    NavHost(
+                    navController = navController,
+                    startDestination = Route.PookieMonRoute,
+                    modifier = Modifier
+                        .fillMaxSize(),
+                ) {
                 navigation<Route.PookieMonRoute>(
                     startDestination = Route.PokemonListRoute,
                 ) {
@@ -465,6 +392,32 @@ fun AppNavGraph() {
                     )
                 }
             }
+            }
+
+                if (showBottomBar) {
+                    FloatingNavBar(
+                        currentDestination = currentDestination,
+                        onPokemonClick = {
+                            navController.navigate(Route.PokemonListRoute) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        onTabClick = { route ->
+                            navController.navigate(route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                    )
+                }
             }
         }
 }

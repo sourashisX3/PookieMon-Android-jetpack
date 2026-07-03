@@ -97,6 +97,8 @@ fun SettingsScreen(
                     viewModel.setDarkMode(it)
                 },
             )
+
+            Spacer(modifier = Modifier.height(96.dp))
         }
     }
 }

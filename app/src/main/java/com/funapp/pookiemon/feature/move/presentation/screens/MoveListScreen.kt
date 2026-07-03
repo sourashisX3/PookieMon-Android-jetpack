@@ -142,6 +142,10 @@ fun MoveListScreen(
                                     MoveCardShimmer()
                                 }
                             }
+
+                            item {
+                                Box(modifier = Modifier.height(96.dp))
+                            }
                         }
                     }
                 }
@@ -151,7 +155,7 @@ fun MoveListScreen(
                 gridState = gridState,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = 96.dp),
             )
         }
     }
