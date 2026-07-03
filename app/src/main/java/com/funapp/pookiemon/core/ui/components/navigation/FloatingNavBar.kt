@@ -102,7 +102,7 @@ fun FloatingNavBar(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 32.dp)
             .padding(bottom = 24.dp),
         shape = RoundedCornerShape(24.dp),
         shadowElevation = 12.dp,
@@ -112,7 +112,7 @@ fun FloatingNavBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(64.dp)
-                .padding(horizontal = 6.dp, vertical = 6.dp),
+                .padding(vertical = 10.dp),
         ) {
             Box(
                 modifier = Modifier
