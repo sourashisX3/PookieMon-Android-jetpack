@@ -50,7 +50,8 @@ import com.funapp.pookiemon.core.ui.components.rememberShimmerBrush
 import com.funapp.pookiemon.core.ui.components.shimmerEffect
 import com.funapp.pookiemon.core.utils.performClickHaptic
 import com.funapp.pookiemon.feature.berry.domain.model.Berry
-import com.funapp.pookiemon.feature.berry.presentation.BerryListViewModel
+import com.funapp.pookiemon.feature.berry.presentation.events.BerryListUiEvent
+import com.funapp.pookiemon.feature.berry.presentation.viewmodels.BerryListViewModel
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,7 +86,7 @@ fun BerryListScreen(
             uiState.error != null -> {
                 AppErrorView(
                     message = uiState.error ?: stringResource(R.string.unknown_error),
-                    onRetry = { viewModel.loadBerries() },
+                    onRetry = { viewModel.onEvent(BerryListUiEvent.RetryClicked) },
                     modifier = Modifier.fillMaxSize().padding(padding),
                 )
             }

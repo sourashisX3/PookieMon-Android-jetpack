@@ -18,7 +18,9 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Hub
+import androidx.compose.material.icons.filled.CatchingPokemon
+import androidx.compose.material.icons.filled.RocketLaunch
+import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,7 +47,19 @@ import com.funapp.pookiemon.core.ui.components.AppErrorView
 import com.funapp.pookiemon.core.ui.components.AppTopBar
 import com.funapp.pookiemon.core.ui.components.rememberShimmerBrush
 import com.funapp.pookiemon.core.ui.components.shimmerEffect
-import com.funapp.pookiemon.feature.evolution.presentation.EvolutionViewerViewModel
+import com.funapp.pookiemon.feature.evolution.domain.model.EvolutionChain
+import com.funapp.pookiemon.feature.evolution.domain.model.EvolutionNode
+import com.funapp.pookiemon.feature.evolution.presentation.viewmodels.EvolutionViewerViewModel
+
+private fun flattenEvolution(chain: EvolutionChain): List<String> {
+    val result = mutableListOf(chain.species)
+    fun flattenNode(node: EvolutionNode) {
+        result.add(node.species)
+        node.evolvesTo.forEach { flattenNode(it) }
+    }
+    chain.evolvesTo.forEach { flattenNode(it) }
+    return result
+}
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,6 +69,7 @@ fun EvolutionViewerScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val gridState = rememberLazyGridState()
+    val flatChain = uiState.chain?.let { flattenEvolution(it) }
 
     Scaffold(
         topBar = {
@@ -84,7 +99,7 @@ fun EvolutionViewerScreen(
                     modifier = Modifier.fillMaxSize().padding(padding),
                 )
             }
-            uiState.chain != null -> {
+            flatChain != null -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     state = gridState,
@@ -92,9 +107,11 @@ fun EvolutionViewerScreen(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    items(uiState.chain!!, key = { it }) { speciesName ->
+                    items(flatChain, key = { it }) { speciesName ->
                         EvolutionCard(
                             speciesName = speciesName,
+                            isFirst = speciesName == flatChain.first(),
+                            isLast = speciesName == flatChain.last(),
                             modifier = Modifier.animateItem(),
                         )
                     }
@@ -107,8 +124,15 @@ fun EvolutionViewerScreen(
 @Composable
 private fun EvolutionCard(
     speciesName: String,
+    isFirst: Boolean,
+    isLast: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val icon = when {
+        isFirst -> Icons.Default.CatchingPokemon
+        isLast -> Icons.Default.RocketLaunch
+        else -> Icons.Default.AutoFixHigh
+    }
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -137,7 +161,7 @@ private fun EvolutionCard(
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    Icons.Default.Hub,
+                    imageVector = icon,
                     contentDescription = null,
                     modifier = Modifier.fillMaxWidth(0.6f),
                     tint = MaterialTheme.colorScheme.primary,
@@ -156,6 +180,8 @@ private fun EvolutionCard(
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.onSurface,
             )
+
+
         }
     }
 }

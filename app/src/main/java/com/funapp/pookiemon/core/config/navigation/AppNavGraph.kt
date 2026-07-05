@@ -61,12 +61,6 @@ fun AppNavGraph() {
         currentDestination?.hasRoute<Route.ItemListRoute>() == true ||
         currentDestination?.hasRoute<Route.MoveListRoute>() == true ||
         currentDestination?.hasRoute<Route.ExploreRoute>() == true ||
-        currentDestination?.hasRoute<Route.BerryListRoute>() == true ||
-        currentDestination?.hasRoute<Route.EvolutionViewerRoute>() == true ||
-        currentDestination?.hasRoute<Route.LocationListRoute>() == true ||
-        currentDestination?.hasRoute<Route.EncounterListRoute>() == true ||
-        currentDestination?.hasRoute<Route.GamesListRoute>() == true ||
-        currentDestination?.hasRoute<Route.ReferencesRoute>() == true ||
         currentDestination?.hasRoute<Route.SettingsRoute>() == true
 
     Scaffold { innerPadding ->

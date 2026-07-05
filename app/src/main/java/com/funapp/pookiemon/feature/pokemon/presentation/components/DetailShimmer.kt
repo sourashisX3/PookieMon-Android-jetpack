@@ -1,4 +1,4 @@
-package com.funapp.pookiemon.feature.pokemon.presentation.screens.detail
+package com.funapp.pookiemon.feature.pokemon.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import com.funapp.pookiemon.core.ui.components.rememberShimmerBrush
 import com.funapp.pookiemon.core.ui.components.shimmerEffect
@@ -121,13 +122,13 @@ fun DetailShimmer(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ShimmerTitle(brush: androidx.compose.ui.graphics.Brush) {
+private fun ShimmerTitle(brush: Brush) {
     Box(modifier = Modifier.fillMaxWidth(0.3f).height(16.dp).shimmerEffect(brush, RoundedCornerShape(4.dp)))
     Spacer(modifier = Modifier.height(10.dp))
 }
 
 @Composable
-private fun ShimmerLine(brush: androidx.compose.ui.graphics.Brush, labelWeight: Float, valueWeight: Float) {
+private fun ShimmerLine(brush: Brush, labelWeight: Float, valueWeight: Float) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Box(
             modifier = Modifier
@@ -146,7 +147,7 @@ private fun ShimmerLine(brush: androidx.compose.ui.graphics.Brush, labelWeight: 
 }
 
 @Composable
-private fun ShimmerCard(brush: androidx.compose.ui.graphics.Brush, content: @Composable () -> Unit) {
+private fun ShimmerCard(brush: Brush, content: @Composable () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()

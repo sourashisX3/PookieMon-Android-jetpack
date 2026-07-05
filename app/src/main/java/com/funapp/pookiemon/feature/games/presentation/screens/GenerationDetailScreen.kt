@@ -33,7 +33,7 @@ import com.funapp.pookiemon.core.ui.components.AppErrorView
 import com.funapp.pookiemon.core.ui.components.AppTopBar
 import com.funapp.pookiemon.core.ui.components.rememberShimmerBrush
 import com.funapp.pookiemon.core.ui.components.shimmerEffect
-import com.funapp.pookiemon.feature.games.presentation.GamesDetailViewModel
+import com.funapp.pookiemon.feature.games.presentation.viewmodels.GamesDetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

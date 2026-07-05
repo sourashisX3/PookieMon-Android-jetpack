@@ -50,13 +50,14 @@ import com.funapp.pookiemon.core.ui.components.rememberShimmerBrush
 import com.funapp.pookiemon.core.ui.components.shimmerEffect
 import com.funapp.pookiemon.core.utils.performClickHaptic
 import com.funapp.pookiemon.feature.encounter.domain.model.EncounterMethod
-import com.funapp.pookiemon.feature.encounter.presentation.EncounterListViewModel
+import com.funapp.pookiemon.feature.encounter.presentation.events.EncounterMethodListUiEvent
+import com.funapp.pookiemon.feature.encounter.presentation.viewmodels.EncounterMethodListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EncounterListScreen(
     navController: NavController,
-    viewModel: EncounterListViewModel = hiltViewModel(),
+    viewModel: EncounterMethodListViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val gridState = rememberLazyGridState()
@@ -85,7 +86,7 @@ fun EncounterListScreen(
             uiState.error != null -> {
                 AppErrorView(
                     message = uiState.error ?: stringResource(R.string.unknown_error),
-                    onRetry = { viewModel.loadMethods() },
+                    onRetry = { viewModel.onEvent(EncounterMethodListUiEvent.RetryClicked) },
                     modifier = Modifier.fillMaxSize().padding(padding),
                 )
             }

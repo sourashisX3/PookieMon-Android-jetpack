@@ -1,7 +1,7 @@
 package com.funapp.pookiemon.feature.pokemon.presentation.di
 
 import com.funapp.pookiemon.feature.pokemon.data.repository.PokemonRepositoryImpl
-import com.funapp.pookiemon.feature.pokemon.data.datasource.remote.PokeApiService
+import com.funapp.pookiemon.feature.pokemon.data.datasource.remote.PokemonApiService
 import com.funapp.pookiemon.feature.pokemon.domain.repository.PokemonRepository
 import dagger.Module
 import dagger.Provides
@@ -16,8 +16,8 @@ object PokemonModule {
 
     @Provides
     @Singleton
-    fun providePokeApiService(retrofit: Retrofit): PokeApiService {
-        return retrofit.create(PokeApiService::class.java)
+    fun providePokemonApiService(retrofit: Retrofit): PokemonApiService {
+        return retrofit.create(PokemonApiService::class.java)
     }
 
     @Provides

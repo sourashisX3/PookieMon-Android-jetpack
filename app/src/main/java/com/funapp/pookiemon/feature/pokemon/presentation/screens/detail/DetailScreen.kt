@@ -61,6 +61,7 @@ import com.funapp.pookiemon.core.ui.components.AppErrorView
 import com.funapp.pookiemon.core.ui.components.AppTopBar
 import com.funapp.pookiemon.feature.pokemon.domain.model.Pokemon
 import com.funapp.pookiemon.feature.pokemon.domain.model.PokemonSpecies
+import com.funapp.pookiemon.feature.pokemon.presentation.components.DetailShimmer
 import com.funapp.pookiemon.feature.pokemon.presentation.components.InfoRow
 import com.funapp.pookiemon.feature.pokemon.presentation.components.StatSection
 import com.funapp.pookiemon.feature.pokemon.presentation.components.TypeChip

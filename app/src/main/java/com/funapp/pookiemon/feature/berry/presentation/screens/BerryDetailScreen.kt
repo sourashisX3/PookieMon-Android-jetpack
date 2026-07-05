@@ -34,7 +34,7 @@ import com.funapp.pookiemon.core.ui.components.AppErrorView
 import com.funapp.pookiemon.core.ui.components.AppTopBar
 import com.funapp.pookiemon.core.ui.components.rememberShimmerBrush
 import com.funapp.pookiemon.core.ui.components.shimmerEffect
-import com.funapp.pookiemon.feature.berry.presentation.BerryDetailViewModel
+import com.funapp.pookiemon.feature.berry.presentation.viewmodels.BerryDetailViewModel
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)

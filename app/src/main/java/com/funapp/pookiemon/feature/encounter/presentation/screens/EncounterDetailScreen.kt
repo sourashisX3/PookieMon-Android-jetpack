@@ -33,13 +33,13 @@ import com.funapp.pookiemon.core.ui.components.AppErrorView
 import com.funapp.pookiemon.core.ui.components.AppTopBar
 import com.funapp.pookiemon.core.ui.components.rememberShimmerBrush
 import com.funapp.pookiemon.core.ui.components.shimmerEffect
-import com.funapp.pookiemon.feature.encounter.presentation.EncounterDetailViewModel
+import com.funapp.pookiemon.feature.encounter.presentation.viewmodels.EncounterMethodDetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EncounterDetailScreen(
     onNavigateBack: () -> Unit,
-    viewModel: EncounterDetailViewModel = hiltViewModel(),
+    viewModel: EncounterMethodDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Scaffold(

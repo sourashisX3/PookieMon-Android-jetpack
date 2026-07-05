@@ -1,23 +1,29 @@
-# PookieMon-Android-jetpack
+# PookieMon
 
-A Pokemon browsing Android app built with Jetpack Compose, Hilt, Room, Retrofit, and Kotlin Serialization.
+A Pokémon browsing Android app built with Jetpack Compose, Hilt, Room, Retrofit, and Kotlin Serialization.
 
 ## Features
 
-- Browse Pokemon with paginated grid
-- View detailed Pokemon info (stats, abilities, evolutions)
-- Pull-to-refresh and caching via Room database
-- Shared element transitions between list and detail
-- Flavor-aware build configs (dev / staging / prod) with API URLs
+- **Pokémon** — Browse with a paginated grid, pull-to-refresh, view detailed stats/abilities/evolutions
+- **Items** & **Moves** — Paginated grids with details, shimmer loading
+- **Explore** — Berries, locations, evolution chains, encounter methods, games/generations, references (abilities, natures, types)
+- **Settings** — Dark mode (system/light/dark), accent color palette selection
+- **Floating Navigation Bar** — Capsule-style tab indicator with animated sliding, crossfading icon, and expand/shrink label
+- **Shared element transitions** between list and detail screens
+- **Flavor-aware build configs** (`devDebug` / `prodDebug`) with environment-specific API URLs
 
 ## Tech Stack
 
-- **UI**: Jetpack Compose, Material 3, Coil
-- **Architecture**: MVVM, Clean Architecture (feature/pokemon)
-- **DI**: Dagger Hilt
-- **Network**: Retrofit + OkHttp + Kotlin Serialization
-- **Database**: Room
-- **Build**: Gradle with product flavors
+| Layer | Library |
+|-------|---------|
+| **UI** | Jetpack Compose + Material 3 |
+| **Navigation** | Navigation Compose (type-safe routes) |
+| **DI** | Dagger Hilt |
+| **Network** | Retrofit + OkHttp + Kotlin Serialization |
+| **Database** | Room (offline cache) |
+| **Image Loading** | Coil |
+| **Animations** | Lottie (splash), Compose animation APIs |
+| **Build** | Gradle with product flavors |
 
 ## Project Structure
 
@@ -25,32 +31,38 @@ A Pokemon browsing Android app built with Jetpack Compose, Hilt, Room, Retrofit,
 app/src/main/java/com/funapp/pookiemon/
 ├── core/
 │   ├── config/
-│   │   ├── navigation/    # AppNavGraph, Route
-│   │   └── network/       # ApiConstants, EnvironmentConfig
-│   ├── database/          # AppDatabase, Converters
-│   ├── di/                # App/Network/Database Hilt modules
-│   ├── theme/             # Material3 theme, colors, typography
-│   ├── ui/components/     # Shared UI components
-│   └── utils/             # Extensions, constants
+│   │   ├── navigation/        # AppNavGraph, Route definitions
+│   │   └── network/           # ApiConstants, PokeApi
+│   ├── data/
+│   │   └── settings/          # DataStore preferences (theme, dark mode)
+│   ├── database/              # AppDatabase, Converters
+│   ├── di/                    # Hilt modules (app, network, database)
+│   ├── theme/                 # Material3 theme, color palettes, typography
+│   ├── ui/
+│   │   └── components/        # Shared composables (nav bar, scroll-to-top, error view, shimmer)
+│   └── utils/                 # Extensions, haptic feedback
 └── feature/
-    └── pokemon/           # Pokemon feature (clean architecture)
-        ├── data/
-        │   ├── dao/                 # Room DAOs (PokemonCacheDao)
-        │   ├── datasource/
-        │   │   ├── local/           # PokemonLocalDataSource
-        │   │   └── remote/          # PokeApi, DTOs, RemoteDataSource
-        │   ├── entity/              # Room entities
-        │   ├── mapper/              # DTO ↔ Domain mapping
-        │   └── repository/          # PokemonRepositoryImpl
-        ├── domain/
-        │   ├── model/               # Domain models
-        │   ├── repository/          # PokemonRepository interface
-        │   └── use_case/            # GetPokemonList, GetPokemonDetail
-        └── presentation/
-            ├── components/          # Reusable composables
-            ├── di/                  # PokemonModule
-            ├── events/              # UI event classes
-            ├── screens/             # Screen composables (detail, list)
-            ├── states/              # UI state classes
-            └── viewmodels/          # ViewModels
+    ├── pokemon/               # Pokémon list + detail
+    ├── item/                  # Items list + detail
+    ├── move/                  # Moves list + detail
+    ├── explore/               # Berries, locations, evolution, encounters, games, references
+    ├── settings/              # Theme + dark mode preferences
+    ├── berry/                 # Berry list + detail
+    ├── encounter/             # Encounter methods + conditions
+    ├── evolution/             # Evolution chain viewer
+    ├── games/                 # Generations + versions
+    ├── location/              # Locations + areas
+    └── references/            # Abilities, natures, types
+```
+
+Each feature follows clean architecture with `data/`, `domain/`, and `presentation/` layers.
+
+## Build
+
+```bash
+# Development (default API)
+./gradlew app:assembleDevDebug
+
+# Production
+./gradlew app:assembleProdDebug
 ```

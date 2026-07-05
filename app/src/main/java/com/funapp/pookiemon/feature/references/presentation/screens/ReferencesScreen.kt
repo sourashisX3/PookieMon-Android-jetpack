@@ -57,7 +57,8 @@ import com.funapp.pookiemon.core.utils.performClickHaptic
 import com.funapp.pookiemon.feature.references.domain.model.Ability
 import com.funapp.pookiemon.feature.references.domain.model.Nature
 import com.funapp.pookiemon.feature.references.domain.model.PokemonType
-import com.funapp.pookiemon.feature.references.presentation.ReferencesViewModel
+import com.funapp.pookiemon.feature.references.presentation.events.ReferencesUiEvent
+import com.funapp.pookiemon.feature.references.presentation.viewmodels.ReferencesViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,7 +103,7 @@ fun ReferencesScreen(
             uiState.error != null -> {
                 AppErrorView(
                     message = uiState.error ?: stringResource(R.string.unknown_error),
-                    onRetry = { viewModel.loadAll() },
+                    onRetry = { viewModel.onEvent(ReferencesUiEvent.RetryClicked) },
                     modifier = Modifier.fillMaxSize().padding(padding),
                 )
             }

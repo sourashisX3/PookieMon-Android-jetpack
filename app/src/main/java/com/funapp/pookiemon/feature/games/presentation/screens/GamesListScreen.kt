@@ -54,7 +54,8 @@ import com.funapp.pookiemon.core.utils.performClickHaptic
 import com.funapp.pookiemon.feature.games.domain.model.Generation
 import com.funapp.pookiemon.feature.games.domain.model.Pokedex
 import com.funapp.pookiemon.feature.games.domain.model.Version
-import com.funapp.pookiemon.feature.games.presentation.GamesViewModel
+import com.funapp.pookiemon.feature.games.presentation.events.GamesUiEvent
+import com.funapp.pookiemon.feature.games.presentation.viewmodels.GamesViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -97,7 +98,7 @@ fun GamesListScreen(
             uiState.error != null -> {
                 AppErrorView(
                     message = uiState.error ?: stringResource(R.string.unknown_error),
-                    onRetry = { viewModel.loadAll() },
+                    onRetry = { viewModel.onEvent(GamesUiEvent.RetryClicked) },
                     modifier = Modifier.fillMaxSize().padding(padding),
                 )
             }

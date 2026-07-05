@@ -50,7 +50,8 @@ import com.funapp.pookiemon.core.ui.components.rememberShimmerBrush
 import com.funapp.pookiemon.core.ui.components.shimmerEffect
 import com.funapp.pookiemon.core.utils.performClickHaptic
 import com.funapp.pookiemon.feature.location.domain.model.Location
-import com.funapp.pookiemon.feature.location.presentation.LocationListViewModel
+import com.funapp.pookiemon.feature.location.presentation.events.LocationListUiEvent
+import com.funapp.pookiemon.feature.location.presentation.viewmodels.LocationListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,7 +86,7 @@ fun LocationListScreen(
             uiState.error != null -> {
                 AppErrorView(
                     message = uiState.error ?: stringResource(R.string.unknown_error),
-                    onRetry = { viewModel.loadLocations() },
+                    onRetry = { viewModel.onEvent(LocationListUiEvent.RetryClicked) },
                     modifier = Modifier.fillMaxSize().padding(padding),
                 )
             }
