@@ -10,7 +10,7 @@ import com.funapp.pookiemon.feature.pokemon.domain.model.PokemonListItem
 import javax.inject.Inject
 
 class PokemonRemoteDataSource @Inject constructor(
-    private val apiService: PokeApiService,
+    private val apiService: PokemonApiService,
 ) {
 
     suspend fun getPokemonList(limit: Int = 20, offset: Int = 0): ApiResult<PokemonListResponseDto> {

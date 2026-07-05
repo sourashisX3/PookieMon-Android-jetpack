@@ -51,9 +51,17 @@ object NetworkModule {
         val urlLogger = Interceptor { chain ->
             val request = chain.request()
             val url = request.url
-            Log.d(NETWORK_TAG, ">>> ${request.method} [${url.scheme}][${url.host}]${url.encodedPath}?${url.encodedQuery}")
+            val query = url.encodedQuery
+            val requestLog = buildString {
+                append(">>> ${request.method} ")
+                append(url.scheme).append("://").append(url.host).append(url.encodedPath)
+                if (!query.isNullOrBlank()) append("?").append(query)
+            }
+            Log.d(NETWORK_TAG, requestLog)
+            val startNs = System.nanoTime()
             val response = chain.proceed(request)
-            Log.d(NETWORK_TAG, "<<< ${response.code} [${url.scheme}][${url.host}]${url.encodedPath} (${response.request.tag()})")
+            val elapsedMs = (System.nanoTime() - startNs) / 1_000_000
+            Log.d(NETWORK_TAG, "<<< ${response.code} ${response.message} (${elapsedMs}ms)")
             response
         }
 

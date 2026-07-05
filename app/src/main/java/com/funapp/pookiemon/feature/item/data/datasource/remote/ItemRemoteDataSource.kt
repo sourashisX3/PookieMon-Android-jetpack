@@ -4,11 +4,10 @@ import com.funapp.pookiemon.core.config.network.ApiResult
 import com.funapp.pookiemon.feature.item.data.datasource.remote.dto.ItemCategoryDto
 import com.funapp.pookiemon.feature.item.data.datasource.remote.dto.ItemDto
 import com.funapp.pookiemon.feature.item.data.datasource.remote.dto.ItemListResponseDto
-import com.funapp.pookiemon.feature.pokemon.data.datasource.remote.PokeApiService
 import javax.inject.Inject
 
 class ItemRemoteDataSource @Inject constructor(
-    private val apiService: PokeApiService,
+    private val apiService: ItemApiService,
 ) {
 
     suspend fun getItemList(limit: Int = 20, offset: Int = 0): ApiResult<ItemListResponseDto> {

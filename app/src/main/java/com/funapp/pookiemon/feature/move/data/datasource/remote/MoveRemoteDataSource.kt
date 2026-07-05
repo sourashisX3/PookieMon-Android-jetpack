@@ -4,11 +4,10 @@ import com.funapp.pookiemon.core.config.network.ApiResult
 import com.funapp.pookiemon.feature.move.data.datasource.remote.dto.MoveDamageClassDto
 import com.funapp.pookiemon.feature.move.data.datasource.remote.dto.MoveDto
 import com.funapp.pookiemon.feature.move.data.datasource.remote.dto.MoveListResponseDto
-import com.funapp.pookiemon.feature.pokemon.data.datasource.remote.PokeApiService
 import javax.inject.Inject
 
 class MoveRemoteDataSource @Inject constructor(
-    private val apiService: PokeApiService,
+    private val apiService: MoveApiService,
 ) {
 
     suspend fun getMoveList(limit: Int = 20, offset: Int = 0): ApiResult<MoveListResponseDto> {
